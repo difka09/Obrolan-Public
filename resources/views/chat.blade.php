@@ -9,12 +9,16 @@
                         <h3 class="card-title">Obrolan Publik</h3>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body" id="card-body">
                         <dw-messages :messages="messages"></dw-messages>
                     </div>
                     <div class="card-footer">
                         <dw-form
-                            v-on:sent="addMessage" v-bind:user="{{ Auth::user() }}"></dw-form>
+                            v-on:sent="addMessage" v-bind:user="{{ Auth::user() }}">
+                        </dw-form>
+                        <span v-show="typing" class="help-block" style="font-style: italic;">
+                            @{{ user }} is typing...
+                         </span>
                     </div>
                     {{-- <form action="/messages" method="POST">
                         @csrf

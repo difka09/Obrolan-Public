@@ -37,11 +37,27 @@ const app = new Vue({
     el: '#app',
 
     data: {
-        messages: []
+        messages: [],
+        user: '',
+        typing: false
     },
 
     created() {
         this.fetchMessages();
+
+        let _this = this;
+
+        Echo.private('chat')
+        .listenForWhisper('typing', (e) => {
+            this.user = e.user;
+            this.typing = e.typing;
+            console.log(e);
+
+        // remove is typing indicator after 0.9s
+        setTimeout(function() {
+            _this.typing = false
+        }, 900);
+        });
 
         Echo.private('chat')
         .listen('MessageSent', (e) => {
@@ -49,8 +65,7 @@ const app = new Vue({
                 message: e.message.message,
                 user: e.user
             })
-            console.log(e);
-        })
+        });
     },
     methods: {
         fetchMessages(){
