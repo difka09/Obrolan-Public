@@ -25,6 +25,7 @@ import Axios from 'axios';
 
 Vue.component('dw-messages', require('./components/Messages.vue').default);
 Vue.component('dw-form', require('./components/Form.vue').default);
+Vue.component('dw-activeuser', require('./components/ActiveUser.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
@@ -39,14 +40,12 @@ const app = new Vue({
     data: {
         messages: [],
         user: '',
-        typing: false
+        typing: false,
     },
 
     created() {
         this.fetchMessages();
-
         let _this = this;
-
         Echo.private('chat')
         .listenForWhisper('typing', (e) => {
             this.user = e.user;
@@ -67,6 +66,7 @@ const app = new Vue({
             })
         });
     },
+
     methods: {
         fetchMessages(){
             axios.get('/messages').then(response => {
