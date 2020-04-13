@@ -28,7 +28,6 @@ Vue.component('dw-form', require('./components/Form.vue').default);
 Vue.component('dw-messages-friend', require('./components/MessageFriend.vue').default);
 Vue.component('dw-form-friend', require('./components/FormFriend.vue').default);
 Vue.component('dw-activeuser', require('./components/ActiveUser.vue').default);
-Vue.component('dw-timenow', require('./components/TimeNow.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
@@ -43,25 +42,18 @@ const app = new Vue({
     data: {
         messages: [],
         user: '',
-        typing: false,
-        chats: ''
+        typing: false
     },
 
     created() {
-
-        const userId = $('meta[name="userId"]').attr('content');
-        const friendId = $('meta[name="friendId"]').attr('content');
-
-        if(friendId != undefined){
-            this.fetchMessageFriend(friendId);
-        }
-
         this.fetchMessages();
         let _this = this;
         Echo.private('chat')
         .listenForWhisper('typing', (e) => {
             this.user = e.user;
             this.typing = e.typing;
+            console.log(e);
+
         // remove is typing indicator after 0.9s
         setTimeout(function() {
             _this.typing = false
@@ -72,33 +64,12 @@ const app = new Vue({
         .listen('MessageSent', (e) => {
             this.messages.push({
                 message: e.message.message,
-                user: e.user,
-                created_at: new Date()
+                user: e.user
             })
         });
-
-        Echo.private('chat.' + friendId + '.' + userId)
-        .listen('BroadcastChat', (e) => {
-            document.getElementById('chat-audio').play();
-            this.chats.push(e.chat);
-
-        });
-
-        // function timeAgo(){
-        //     Vue.filter('myOwnTime',function(value){
-        //         moment.locale('id');
-        //         return moment(value).fromNow();});
-        // }
-        // this.interval = setInterval(() => this.$forceUpdate(), 60000);
     },
 
     methods: {
-        fetchMessageFriend(friendId){
-            axios.get('/messages/' +friendId).then(response =>{
-                this.chats = response.data;
-            })
-        },
-
         fetchMessages(){
             axios.get('/messages').then(response => {
                 this.messages = response.data;
@@ -107,9 +78,10 @@ const app = new Vue({
 
         addMessage(message){
             this.messages.push(message);
-            axios.post('/messages', message).then(response => {
-            });
 
+            axios.post('/messages', message).then(response => {
+                console.log(response.data);
+            });
         }
-    },
+    }
 });

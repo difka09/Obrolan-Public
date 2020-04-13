@@ -23,6 +23,11 @@ Broadcast::channel('online', function ($user) {
         return $user->toArray();
     }
 });
+
+Broadcast::channel('chat.{user_id}.{friend_id}', function($user, $user_id, $friend_id){
+    return $user->id == $friend_id;
+});
+// Broadcast::channel('chat.'', ::class);
 // Broadcast::channel('App.User.{id}', function ($user, $id) {
 //     return (int) $user->id === (int) $id;
 // });

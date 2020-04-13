@@ -31,7 +31,8 @@ export default {
         submit() {
             this.$emit('sent', {
                 user: this.user,
-                message: this.message
+                message: this.message,
+                created_at: new Date()
             });
 
             this.message =''

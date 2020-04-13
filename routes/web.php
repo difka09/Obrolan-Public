@@ -25,4 +25,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'ChatController@index');
     Route::get('/messages', 'ChatController@getMessage');
     Route::post('/messages', 'ChatController@broadcastMessage');
+    Route::get('/messages/{friendId}', 'ChatController@getMessageFriend')->name('message.friend');
+    Route::get('/friend/{friendId}', 'ChatController@showChat')->name('show.chat');
+    Route::post('/broadcastmessage','ChatController@broadcastMessageFriend');
+    Route::get('/friendlist', 'ChatController@friendList')->name('friendlist');
 });
